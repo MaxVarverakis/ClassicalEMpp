@@ -1,15 +1,8 @@
-#include "Physics.hpp"
+#include "StaticPhysics.hpp"
 
-Physics::Physics(std::size_t& dim, double& bound, std::size_t& numPoints): m_geometry{dim, bound, numPoints}
-{
-    std::cout << '\n' << "############################################" << '\n';
-    std::cout << "#            Initialized values            #" << '\n';
-    std::cout << "############################################" << "\n\n";
-    std::cout << "dim: " << Utilities::dim << '\n' << "bound: " << Utilities::bound << '\n' << "numPoints: " << Utilities::numPoints << std::endl;
-    std::cout << '\n' << "############################################" << "\n\n";
-};
+StaticPhysics::StaticPhysics(std::size_t& dim, double& bound, std::size_t& numPoints): m_geometry{dim, bound, numPoints} {};
 
-void Physics::calculateElectricField(std::vector<ChargedParticle2D>& particles)
+void StaticPhysics::calculateElectricField(std::vector<ChargedParticle2D>& particles)
 {
     if (particles.empty()) { return; };
 
@@ -21,9 +14,9 @@ void Physics::calculateElectricField(std::vector<ChargedParticle2D>& particles)
     {
         m_E_field.emplace_back(Field2D {0., Point2D {0., 0.}});
         
-        for (ChargedParticle2D particle : particles)
+        for (ChargedParticle2D& particle : particles)
         {
-            Point2D& point { m_geometry.grid2D()[idx] };
+            const Point2D point { m_geometry.grid2D()[idx] };
             double r { point.distanceTo(particle.position) };;
             int sign { particle.charge < 0 ? -1 : 1 }; // negative charge means the electric field points towards the charge
             m_E_field[idx].magnitude += particle.charge / (r*r);
@@ -38,7 +31,7 @@ void Physics::calculateElectricField(std::vector<ChargedParticle2D>& particles)
     };
 };
 
-void Physics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2D>& wires)
+void StaticPhysics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2D>& wires)
 {
     if (wires.empty()) { return; };
 
@@ -52,7 +45,7 @@ void Physics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2D>& wi
         
         for (InfiniteWire2D wire : wires)
         {
-        Point2D& point { m_geometry.grid2D()[idx] };
+        const Point2D point { m_geometry.grid2D()[idx] };
             double r { wire.position.distanceTo(point) };
 
             Point2D r_prime_2D { (point - wire.position) };
@@ -68,7 +61,7 @@ void Physics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2D>& wi
     };
 };
 
-void Physics::writeFields(const std::string& filename, const std::string ext, const std::string delimiter)
+void StaticPhysics::writeFields(const std::string& filename, const std::string ext, const std::string delimiter)
 {
     // first, write the grid points to file
     m_geometry.writeGrid(filename, ext, delimiter);
@@ -78,7 +71,7 @@ void Physics::writeFields(const std::string& filename, const std::string ext, co
 
 };
 
-void Physics::run(std::vector<ChargedParticle2D>& particles, std::vector<InfiniteWire2D>& wires)
+void StaticPhysics::run(std::vector<ChargedParticle2D>& particles, std::vector<InfiniteWire2D>& wires)
 {
     std::cout << "Run starting!" << std::endl;
 

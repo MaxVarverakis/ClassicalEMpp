@@ -20,7 +20,7 @@ public:
     void setY(double y) { m_y = y; }
 
     // Methods
-    double distanceTo(Point2D& other)
+    double distanceTo(const Point2D& other) const
     {
         return std::sqrt(
               (m_x - other.x()) * (m_x - other.x())
@@ -28,9 +28,9 @@ public:
         );
     }
     
-    Point2D operator-(const Point2D& other)
+    Point2D operator-(const Point2D& other) const
     {
-        return Point2D(m_x - other.x(), m_y - other.y());
+        return Point2D(this->x() - other.x(), this->y() - other.y());
     }
 
     void normalize()
@@ -64,7 +64,7 @@ public:
     void setZ(double z) { m_z = z; }
 
     // Methods
-    double distanceTo(Point3D& other)
+    double distanceTo(const Point3D& other) const
     {
         return std::sqrt(
               (m_x - other.x()) * (m_x - other.x())
@@ -90,7 +90,9 @@ public:
 struct ChargedParticle2D
 {
     const double charge; // C
+    const double mass; // kg
     Point2D position; // m
+    Point3D velocity; // m/s
 };
 
 // this struct allows the user to place an infinite wire in the domain and holds the current, 2D position of the wire, and the direction of the wire
@@ -112,5 +114,7 @@ struct Field2D
 struct ChargedParticle3D
 {
     const double charge; // C
+    const double mass; // kg
     Point3D position; // m
+    Point3D velocity; // m/s
 };

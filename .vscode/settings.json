@@ -79,6 +79,14 @@
         "unordered_map": "cpp",
         "fstream": "cpp",
         "__config": "cpp",
-        "any": "cpp"
+        "any": "cpp",
+        "codecvt": "cpp",
+        "map": "cpp",
+        "valarray": "cpp",
+        "chrono": "cpp",
+        "numeric": "cpp",
+        "ranges": "cpp",
+        "stop_token": "cpp",
+        "text_encoding": "cpp"
     },
 }

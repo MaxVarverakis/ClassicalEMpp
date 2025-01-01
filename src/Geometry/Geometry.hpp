@@ -28,8 +28,8 @@ public:
     // std::size_t dim() const { return m_dim; }
     // double bound() const { return m_bound; }
     // double numPoints() const { return m_numPoints; }
-    std::vector<Point2D>& grid2D() { return std::get<std::vector<Point2D>>(m_grid); }
-    std::vector<Point3D>& grid3D() { return std::get<std::vector<Point3D>>(m_grid); }
+    const std::vector<Point2D>& grid2D() const { return std::get<std::vector<Point2D>>(m_grid); }
+    const std::vector<Point3D>& grid3D() const { return std::get<std::vector<Point3D>>(m_grid); }
 
     int checkDomainDimension(std::size_t& dim);
     void constructWorld();

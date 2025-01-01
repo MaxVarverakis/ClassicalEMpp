@@ -2,6 +2,15 @@
 
 namespace Utilities
 {
+    void initMessage()
+    {
+        std::cout << '\n' << "############################################" << '\n';
+        std::cout << "#            Initialized values            #" << '\n';
+        std::cout << "############################################" << "\n\n";
+        std::cout << "dim: " << Utilities::dim << '\n' << "bound: " << Utilities::bound << '\n' << "numPoints: " << Utilities::numPoints << std::endl;
+        std::cout << '\n' << "############################################" << "\n\n";
+    };
+    
     template <typename FileStream>
     void checkFileOpen(const FileStream& file)
     {
@@ -69,6 +78,7 @@ namespace Utilities
         dim = _j["dim"];
         bound = _j["bound"];
         numPoints = _j["numPoints"];
+        numSteps = static_cast<std::size_t>(_j.value("numSteps", 1));
 
         /*
         particles is setup like this in json file:
@@ -84,7 +94,12 @@ namespace Utilities
             particles.reserve(_j["particles"].size());
             for (const auto& particle : _j["particles"]) // use `auto` here because `nlohmann::json::object_t` might not be right and looks ugly in my opinion
             {
-                particles.emplace_back(ChargedParticle2D{particle["charge"], Point2D{particle["x"], particle["y"]}});
+                Point3D velocity {0.0, 0.0, 0.0};
+                if (particle.contains("vx") && particle.contains("vy") && particle.contains("vz")) {
+                    velocity = Point3D{particle["vx"], particle["vy"], particle["vz"]};
+                }
+
+                particles.emplace_back(ChargedParticle2D{particle["charge"], _j.value("mass", 0.0), Point2D{particle["x"], particle["y"]}, velocity});
             };
         }
 
@@ -114,5 +129,27 @@ namespace Utilities
             a.z() * b.x() - a.x() * b.z(),
             a.x() * b.y() - a.y() * b.x()
         };
+    };
+
+    std::size_t findNearestGridPointIndex(const Geometry& grid, const Point2D& point)
+    {
+        double minDistance { 3*bound };
+        std::size_t idx { 0 };
+
+        const std::vector<Point2D>& grid_points { grid.grid2D() };
+
+        for (std::size_t i = 0; i < grid_points.size(); ++i)
+        {
+            const double distance { point.distanceTo(grid_points[i]) };
+            if (distance < minDistance)
+            {
+                idx = i;
+                minDistance = distance;
+            }
+        }
+
+        return idx;
+
+        // return grid[std::distance(v.begin(), std::min_element(v.begin(), v.end()))]
     };
 };
