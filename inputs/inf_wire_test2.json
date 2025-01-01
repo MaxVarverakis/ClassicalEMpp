@@ -1,0 +1,20 @@
+{
+    "output filename": "inf_wire_test2",
+    "dim": 2,
+    "bound": 5.0,
+    "numPoints": 200,
+    "wires": [
+        {
+            "current": 1.0,
+            "x": -2.0,
+            "y": 0.0,
+            "direction": {"x": 0.0, "y": 0.0, "z": 1.0}
+        },
+        {
+            "current": 1.0,
+            "x": 2.0,
+            "y": 0.0,
+            "direction": {"x": 0.0, "y": 0.0, "z": 1.0}
+        }
+    ]
+}
