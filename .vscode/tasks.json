@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "C/C++: clang++ build active file",
-            "command": "/usr/bin/clang++",
+            "command": "/opt/homebrew/opt/llvm/bin/clang++",
             "args": [
                 "-fcolor-diagnostics",
                 "-fansi-escape-codes",
@@ -14,7 +14,9 @@
                 "-Wextra",
                 "-Wconversion",
                 "-Wsign-conversion",
+                "-fopenmp",
                 "-std=c++23",
+                "-I/opt/homebrew/Cellar/nlohmann-json/3.11.3/include",
                 "${workspaceFolder}/src/**/*.cpp",  // All files in src and subdirectories
                 "${workspaceFolder}/main.cpp",      // Explicitly include main.cpp
                 "-o",

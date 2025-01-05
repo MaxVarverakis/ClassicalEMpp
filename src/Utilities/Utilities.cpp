@@ -9,6 +9,14 @@ namespace Utilities
         std::cout << "############################################" << "\n\n";
         std::cout << "dim: " << Utilities::dim << '\n' << "bound: " << Utilities::bound << '\n' << "numPoints: " << Utilities::numPoints << std::endl;
         std::cout << '\n' << "############################################" << "\n\n";
+
+        #ifdef _OPENMP
+            std::cout << "OpenMP is enabled. Running in parallel mode.\n";
+        #else
+            std::cout << "OpenMP is not enabled. Running in sequential mode.\n";
+        #endif
+        
+        std::cout << '\n' << "############################################" << "\n\n";
     };
     
     template <typename FileStream>
@@ -18,7 +26,7 @@ namespace Utilities
             throw std::ios_base::failure("Failed to open file!");
         }
     };
-    
+
     void appendToEndOfLine(const std::string& filename, const std::string& ext, const std::string& delimiter, const std::vector<Field2D>& data)
     {
         if (data.empty()) return;
@@ -79,6 +87,7 @@ namespace Utilities
         bound = _j["bound"];
         numPoints = _j["numPoints"];
         numSteps = static_cast<std::size_t>(_j.value("numSteps", 1));
+        dt = _j.value("dt", 0.01);
 
         /*
         particles is setup like this in json file:
@@ -94,12 +103,18 @@ namespace Utilities
             particles.reserve(_j["particles"].size());
             for (const auto& particle : _j["particles"]) // use `auto` here because `nlohmann::json::object_t` might not be right and looks ugly in my opinion
             {
+                if (!checkPointWithinBounds(particle["x"], particle["y"])) 
+                {
+                    std::cerr << "Particle out of bounds! Ignoring..." << '\n' << "x\t" << particle["x"] << '\n' << "y\t" << particle["y"] << std::endl;
+                    continue;
+                };
+
                 Point3D velocity {0.0, 0.0, 0.0};
                 if (particle.contains("vx") && particle.contains("vy") && particle.contains("vz")) {
                     velocity = Point3D{particle["vx"], particle["vy"], particle["vz"]};
                 }
 
-                particles.emplace_back(ChargedParticle2D{particle["charge"], _j.value("mass", 0.0), Point2D{particle["x"], particle["y"]}, velocity});
+                particles.emplace_back(ChargedParticle2D{particle["charge"], abs(particle.value("mass", 1.0)), Point2D{particle["x"], particle["y"]}, velocity});
             };
         }
 
@@ -131,25 +146,23 @@ namespace Utilities
         };
     };
 
-    std::size_t findNearestGridPointIndex(const Geometry& grid, const Point2D& point)
+    bool checkPointWithinBounds(const double& x, const double& y)
     {
-        double minDistance { 3*bound };
-        std::size_t idx { 0 };
+        return abs(x) <= bound && abs(y) <= bound;
+    };
 
-        const std::vector<Point2D>& grid_points { grid.grid2D() };
+    bool checkPointWithinBounds(Point2D& point)
+    {
+        return abs(point.x()) <= bound && abs(point.y()) <= bound;
+    };
 
-        for (std::size_t i = 0; i < grid_points.size(); ++i)
-        {
-            const double distance { point.distanceTo(grid_points[i]) };
-            if (distance < minDistance)
-            {
-                idx = i;
-                minDistance = distance;
-            }
-        }
+    std::size_t findNearestGridPointIndex(const Point2D& point)
+    {
+        double step_size { 2 * bound / (numPoints + 1) };
+        // since `bound` is positive, we have -(-bound) = +bound
+        std::size_t x_idx { static_cast<std::size_t>(std::round((point.x() + bound) / step_size)) };
+        std::size_t y_idx { static_cast<std::size_t>(std::round((point.y() + bound) / step_size)) };
 
-        return idx;
-
-        // return grid[std::distance(v.begin(), std::min_element(v.begin(), v.end()))]
+        return static_cast<std::size_t>( (numPoints+1) * x_idx + y_idx );
     };
 };

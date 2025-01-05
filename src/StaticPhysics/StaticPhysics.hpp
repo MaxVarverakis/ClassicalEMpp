@@ -19,9 +19,9 @@ public:
     // 2D Methods
 
     // Constructor for 2D
-    StaticPhysics(std::size_t& dim, double& bound, std::size_t& numPoints);
+    StaticPhysics(const std::size_t& dim, const double& bound, const std::size_t& numPoints);
     // accumulates the electric field at each point in the domain (grid) for each charged particle
-    void calculateElectricField(std::vector<ChargedParticle2D>& particles);
+    void calculateElectricField(std::vector<ChargedParticle2D>& particles, const bool& initialize);
     void calculateInfiniteWireMagneticField(std::vector<InfiniteWire2D>& wires);
 
     // writes the electric/magnetic field to a file along with the grid points

@@ -1,0 +1,15 @@
+{
+    "output filename": "dynamics_test/output",
+    "dim": 2,
+    "bound": 5.0,
+    "numPoints": 200,
+    "numSteps": 500,
+    "dt": 0.1,
+    "particles":
+    [
+        {"charge": 1.0, "mass": 10.0, "x": 1.0, "y": 1.5, "vx": -0.5, "vy": 0.0, "vz": 0.0},
+        {"charge": -1.0, "mass": 10.0, "x": -1.0, "y": -1.5, "vx": 0.5, "vy": 0.1, "vz": 0.0},
+        {"charge": -1.0, "mass": 100.0, "x": 0.0, "y": 0.0, "vx": 0.0, "vy": 0.25, "vz": 0.0},
+        {"charge": 1.0, "mass": 100.0, "x": 0.0, "y": 4.0, "vx": 0.0, "vy": -0.25, "vz": 0.0}
+    ]
+}

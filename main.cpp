@@ -1,5 +1,6 @@
 // #include "src/Geometry/Geometry.hpp"
-#include "src/StaticPhysics/StaticPhysics.hpp"
+// #include "src/StaticPhysics/StaticPhysics.hpp"
+#include "src/DynamicPhysics/DynamicPhysics.hpp"
 
 
 int main(int argc, char* argv[])
@@ -12,8 +13,11 @@ int main(int argc, char* argv[])
 
     // read the json file and set the dim, bound, and numPoints in the Utilities namespace
     Utilities::readJsonFile(argv[1]);
-    StaticPhysics static_physics(Utilities::dim, Utilities::bound, Utilities::numPoints);
-    static_physics.run(Utilities::particles, Utilities::wires);
+    // StaticPhysics static_physics(Utilities::dim, Utilities::bound, Utilities::numPoints);
+    // static_physics.run(Utilities::particles, Utilities::wires);
+    
+    DynamicPhysics dynamic_physics(Utilities::dim, Utilities::bound, Utilities::numPoints, Utilities::numSteps, Utilities::dt);
+    dynamic_physics.run(Utilities::particles, Utilities::wires);
 
     return 0;
 }

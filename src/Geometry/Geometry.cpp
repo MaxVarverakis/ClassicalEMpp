@@ -1,6 +1,6 @@
 #include "Geometry.hpp"
 
-Geometry::Geometry(std::size_t& dim, double& bound, std::size_t& numPoints) : m_dim{dim}, m_bound{bound}, m_numPoints{numPoints}
+Geometry::Geometry(const std::size_t& dim, const double& bound, const std::size_t& numPoints) : m_dim{dim}, m_bound{bound}, m_numPoints{numPoints}
 {
     checkDomainDimension(m_dim);
     
@@ -8,7 +8,7 @@ Geometry::Geometry(std::size_t& dim, double& bound, std::size_t& numPoints) : m_
     constructWorld();
 };
 
-int Geometry::checkDomainDimension(std::size_t& dim)
+int Geometry::checkDomainDimension(const std::size_t& dim)
 {
     if (dim != 2 && dim != 3)
     {

@@ -5,7 +5,8 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/src",
-                "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include"
+                "/opt/homebrew/Cellar/nlohmann-json/3.11.3/include",
+                "/opt/homebrew/Cellar/libomp//19.1.6/include"
             ],
             "defines": [],
             "macFrameworkPath": [

@@ -1,18 +1,36 @@
 #include "StaticPhysics.hpp"
 
-StaticPhysics::StaticPhysics(std::size_t& dim, double& bound, std::size_t& numPoints): m_geometry{dim, bound, numPoints} {};
+StaticPhysics::StaticPhysics(const std::size_t& dim, const double& bound, const std::size_t& numPoints): m_geometry{dim, bound, numPoints} {};
 
-void StaticPhysics::calculateElectricField(std::vector<ChargedParticle2D>& particles)
+void StaticPhysics::calculateElectricField(std::vector<ChargedParticle2D>& particles, const bool& initialize)
 {
     if (particles.empty()) { return; };
 
-    // initialize the electric field at each point in the domain/grid
-    m_E_field.reserve(m_geometry.grid2D().size() * particles.size());
+    if (initialize)
+    {
+        // initialize the electric field at each point in the domain/grid
+        m_E_field.reserve(m_geometry.grid2D().size() * particles.size());
+    }
+    // else
+    // {
+    //     m_E_field.clear();
+    // }
 
     // accumulate the electric field at each point in the domain/grid coming from each charged particle
+    // #pragma omp parallel for
     for (std::size_t idx = 0; idx < m_geometry.grid2D().size(); ++idx)
     {
-        m_E_field.emplace_back(Field2D {0., Point2D {0., 0.}});
+        if (initialize)
+        {
+            m_E_field.emplace_back(Field2D {0., Point2D {0., 0.}});
+        }
+        else
+        {
+            m_E_field[idx].magnitude = 0.;
+            m_E_field[idx].direction.setX(0.);
+            m_E_field[idx].direction.setY(0.);
+        }
+        
         
         for (ChargedParticle2D& particle : particles)
         {
@@ -39,6 +57,7 @@ void StaticPhysics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2
     m_B_field.reserve(m_geometry.grid2D().size());
 
     // accumulate the magnetic field at each point in the domain/grid coming from each wire
+    // #pragma omp parallel for
     for (std::size_t idx = 0; idx < m_geometry.grid2D().size(); ++idx)
     {
         m_B_field.emplace_back(Field2D {0., Point2D {0., 0.}});
@@ -75,7 +94,7 @@ void StaticPhysics::run(std::vector<ChargedParticle2D>& particles, std::vector<I
 {
     std::cout << "Run starting!" << std::endl;
 
-    calculateElectricField(particles);
+    calculateElectricField(particles, true);
     calculateInfiniteWireMagneticField(wires);
     writeFields(Utilities::outputFilename);
 

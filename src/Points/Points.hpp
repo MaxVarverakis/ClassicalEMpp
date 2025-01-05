@@ -15,7 +15,7 @@ public:
     double x() const { return m_x; }
     double y() const { return m_y; }
 
-    // Setters (for now leave out this feature)
+    // Setters
     void setX(double x) { m_x = x; }
     void setY(double y) { m_y = y; }
 
@@ -30,7 +30,41 @@ public:
     
     Point2D operator-(const Point2D& other) const
     {
-        return Point2D(this->x() - other.x(), this->y() - other.y());
+        return Point2D(m_x - other.x(), m_y - other.y());
+    }
+
+    Point2D operator+(const Point2D& other) const
+    {
+        return Point2D(m_x + other.x(), m_y + other.y());
+    }
+
+    Point2D operator*(const double scalar)
+    {
+        return Point2D(scalar * m_x, scalar * m_y);
+    }
+
+    Point2D operator/(const double scalar)
+    {
+        return Point2D(m_x / scalar, m_y / scalar);
+    }
+
+    bool operator==(const Point2D& other) const
+    {
+        return m_x == other.x() && m_y == other.y();
+    }
+
+    void operator+=(const Point2D& other)
+    {
+        m_x += other.x();
+        m_y += other.y();
+        // return Point2D(m_x + other.x(), m_y + other.y());
+    }
+    
+    void operator-=(const Point2D& other)
+    {
+        m_x -= other.x();
+        m_y -= other.y();
+        // return Point2D(m_x + other.x(), m_y + other.y());
     }
 
     void normalize()
@@ -42,6 +76,9 @@ public:
 
     double magnitude() { return std::sqrt(m_x*m_x + m_y*m_y);}
 };
+
+// overload scalar multiplication, but to make it work in `scalar * Point2D` direction we define it outside the Point2D class
+Point2D operator*(const double scalar, const Point2D& point);
 
 class Point3D
 {
@@ -58,7 +95,7 @@ public:
     double y() const { return m_y; }
     double z() const { return m_z; }
 
-    // Setters (for now leave out this feature)
+    // Setters
     void setX(double x) { m_x = x; }
     void setY(double y) { m_y = y; }
     void setZ(double z) { m_z = z; }
@@ -73,6 +110,46 @@ public:
         );
     }
 
+    Point3D operator-(const Point3D& other) const
+    {
+        return Point3D(m_x - other.x(), m_y - other.y(), m_z - other.z());
+    }
+
+    Point3D operator+(const Point3D& other) const
+    {
+        return Point3D(m_x + other.x(), m_y + other.y(), m_z + other.z());
+    }
+
+
+    Point3D operator*(const double scalar)
+    {
+        return Point3D(scalar * m_x, scalar * m_y, scalar * m_z);
+    }
+
+    Point3D operator/(const double scalar)
+    {
+        return Point3D(m_x / scalar, m_y / scalar, m_z / scalar);
+    }
+
+    bool operator==(const Point3D& other) const
+    {
+        return m_x == other.x() && m_y == other.y() && m_z == other.z();
+    }
+
+    void operator+=(const Point3D& other)
+    {
+        m_x += other.x();
+        m_y += other.y();
+        m_z += other.z();
+    }
+
+    void operator-=(const Point3D& other)
+    {
+        m_x -= other.x();
+        m_y -= other.y();
+        m_z -= other.z();
+    }
+
     void normalize()
     {
         double magnitude { this->magnitude() };
@@ -84,6 +161,9 @@ public:
     double magnitude() { return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);}
 };
 
+// overload scalar multiplication, but to make it commutative we define it outside the Point2D class
+Point3D operator*(const double scalar, const Point3D& point);
+
 // Structs below
 
 // this struct allows the user to place a charged particle in the domain and holds the charge and 2D position of the particle
@@ -93,6 +173,14 @@ struct ChargedParticle2D
     const double mass; // kg
     Point2D position; // m
     Point3D velocity; // m/s
+
+    bool operator==(const ChargedParticle2D& other) const
+    {
+        return charge == other.charge &&
+                mass == other.mass &&
+                position == other.position &&
+                velocity == other.velocity;
+    }
 };
 
 // this struct allows the user to place an infinite wire in the domain and holds the current, 2D position of the wire, and the direction of the wire
@@ -117,4 +205,12 @@ struct ChargedParticle3D
     const double mass; // kg
     Point3D position; // m
     Point3D velocity; // m/s
+
+    bool operator==(const ChargedParticle3D& other) const
+    {
+        return charge == other.charge &&
+                mass == other.mass &&
+                position == other.position &&
+                velocity == other.velocity;
+    }
 };
