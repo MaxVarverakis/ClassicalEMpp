@@ -35,11 +35,12 @@ void StaticPhysics::calculateElectricField(std::vector<ChargedParticle2D>& parti
         for (ChargedParticle2D& particle : particles)
         {
             const Point2D point { m_geometry.grid2D()[idx] };
-            double r { point.distanceTo(particle.position) };;
-            int sign { particle.charge < 0 ? -1 : 1 }; // negative charge means the electric field points towards the charge
-            m_E_field[idx].magnitude += particle.charge / (r*r);
+            Point2D r_prime { Utilities::r_prime(point, particle.position) };
             
-            Point2D r_prime { point - particle.position };
+            double r { r_prime.magnitude() };
+            int sign { particle.charge < 0 ? -1 : 1 }; // negative charge means the electric field points towards the charge
+
+            m_E_field[idx].magnitude += particle.charge / (r*r);
             m_E_field[idx].direction.setX( m_E_field[idx].direction.x() + sign * r_prime.x() / r );
             m_E_field[idx].direction.setY( m_E_field[idx].direction.y() + sign * r_prime.y() / r );
         };
@@ -68,7 +69,7 @@ void StaticPhysics::calculateInfiniteWireMagneticField(std::vector<InfiniteWire2
             double r { wire.position.distanceTo(point) };
 
             Point2D r_prime_2D { (point - wire.position) };
-            Point3D components { Utilities::crossProduct(wire.direction, Point3D {r_prime_2D.x()/r_prime_2D.magnitude(), r_prime_2D.y()/r_prime_2D.magnitude(), 0.}) };
+            Point3D components { wire.direction.cross(Point3D {r_prime_2D.x()/r_prime_2D.magnitude(), r_prime_2D.y()/r_prime_2D.magnitude(), 0.}) };
 
             m_B_field[idx].magnitude += wire.current / (2 * Constants::pi * r) * components.magnitude();
             m_B_field[idx].direction.setX( m_B_field[idx].direction.x() + components.x() / r );

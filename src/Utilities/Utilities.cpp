@@ -18,6 +18,25 @@ namespace Utilities
         
         std::cout << '\n' << "############################################" << "\n\n";
     };
+
+    Point2D r_prime(const Point2D& p1, const Point2D& p2)
+    {
+        // Minimum image convention
+        // https://www.researchgate.net/profile/Ulrich-Deiters/publication/235933545_Efficient_Coding_of_the_Minimum_Image_Convention/links/5955135d458515bbaa21e73e/Efficient-Coding-of-the-Minimum-Image-Convention.pdf
+
+        Point2D r_prime { p1 - p2 };
+        
+        if (periodic)
+        {
+            const double& dx { r_prime.x() };
+            const double& dy { r_prime.y() };
+            r_prime.setX( dx - static_cast<int>(dx / bound)*2*Utilities::bound );
+            r_prime.setY( dy - static_cast<int>(dy / bound)*2*Utilities::bound );
+        }
+
+        return r_prime;
+    }
+
     
     template <typename FileStream>
     void checkFileOpen(const FileStream& file)
@@ -85,6 +104,7 @@ namespace Utilities
         outputFilename = _j.value("output filename", "output");
         dim = _j["dim"];
         bound = _j["bound"];
+        periodic = _j.value("periodic", false);
         numPoints = _j["numPoints"];
         numSteps = static_cast<std::size_t>(_j.value("numSteps", 1));
         dt = _j.value("dt", 0.01);
@@ -135,15 +155,6 @@ namespace Utilities
                 });
             };
         }
-    };
-
-    Point3D crossProduct(const Point3D& a, const Point3D& b)
-    {
-        return {
-            a.y() * b.z() - a.z() * b.y(),
-            a.z() * b.x() - a.x() * b.z(),
-            a.x() * b.y() - a.y() * b.x()
-        };
     };
 
     bool checkPointWithinBounds(const double& x, const double& y)

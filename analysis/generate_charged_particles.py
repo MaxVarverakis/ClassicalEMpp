@@ -1,6 +1,6 @@
 import random
 
-num_particles = 30
+num_particles = 12
 
 for i in range(num_particles):
     charge = 0

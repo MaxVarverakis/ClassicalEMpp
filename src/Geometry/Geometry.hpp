@@ -27,7 +27,7 @@ public:
     // Getters
     // std::size_t dim() const { return m_dim; }
     double bound() const { return m_bound; }
-    double numPoints() const { return m_numPoints; }
+    std::size_t numPoints() const { return m_numPoints; }
     const std::vector<Point2D>& grid2D() const { return std::get<std::vector<Point2D>>(m_grid); }
     const std::vector<Point3D>& grid3D() const { return std::get<std::vector<Point3D>>(m_grid); }
 

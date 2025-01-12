@@ -99,7 +99,7 @@ if __name__ == '__main__':
     st = time.time()
 
     field = 'E'
-    fname = 'dynamics_test/output_'
+    fname = 'torus/output_'
 
     inputs = json.load(open('./inputs/dynamics_test.json', 'r'))
 
@@ -107,7 +107,6 @@ if __name__ == '__main__':
     # iteration = 0
     # data = readData(f'./outputs/{fname}{iteration}.txt', field=field)
 
-    # magneticFieldPlot(data, numDraw=5, scale=4, vmax=.08)
 
     # clim=.1
     # vecPlot(data, vmin=-clim, vmax=clim, numDraw=6, scale=2, cmap='RdBu')
@@ -115,11 +114,18 @@ if __name__ == '__main__':
     # clim=1
     # colorPlot(data, vmin=-clim, vmax=clim)
 
-    animation_time = 10 # s (= 50 fps for 500 frames)
+    # magneticFieldPlot(data, numDraw=5, scale=4, vmax=.08)
+
+    animation_time = 10 # s (10 s ==> 50 fps for 500 frames)
 
     fig = plt.figure()
-    anim = animation.FuncAnimation(fig, updatefig, inputs["numSteps"], fargs=(fname, field, 10, False), blit=False)
-    anim.save("/Users/max/ClassicalEM++/animations/dynamics_4_particles_omp.mp4", fps=inputs["numSteps"]/animation_time, dpi=500)
+    anim = animation.FuncAnimation(fig, updatefig, inputs["numSteps"], fargs=(fname, field, 5, False), blit=False)
+    anim.save("/Users/max/ClassicalEM++/animations/torus_12_particles_omp.mp4", fps=inputs["numSteps"]/animation_time, dpi=500)
+    plt.close()
+    
+    fig = plt.figure()
+    anim = animation.FuncAnimation(fig, updatefig, inputs["numSteps"], fargs=(fname, field, 5, True), blit=False)
+    anim.save("/Users/max/ClassicalEM++/animations/torus_12_particles_omp_vec.mp4", fps=inputs["numSteps"]/animation_time, dpi=500)
     plt.close()
     
     print(f'Elapsed time: {time.time() - st:.2f} seconds!')

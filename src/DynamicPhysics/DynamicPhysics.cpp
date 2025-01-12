@@ -40,9 +40,9 @@ std::vector<Point2D> DynamicPhysics::calculateAcceleration(std::vector<ChargedPa
     {
         for (std::size_t j = i+1; j < numParticles; ++j)
         {
-            Point2D r_prime { particles[i].position - particles[j].position };
-            double r { r_prime.magnitude() };
+            Point2D r_prime { Utilities::r_prime(particles[i].position, particles[j].position) };
 
+            double r { r_prime.magnitude() };
             acceleration[i] += Point2D { r_prime * particles[i].charge * particles[j].charge / (particles[i].mass * r*r*r) };
             acceleration[j] -= Point2D { r_prime * particles[i].charge * particles[j].charge / (particles[j].mass * r*r*r) };
         }
@@ -98,7 +98,14 @@ void DynamicPhysics::evolve(std::vector<ChargedParticle2D>& particles)
 
         if (abs(next_x) >= Utilities::bound)
         {
-            particle.position.setX( Utilities::sign<double>(next_x) * Utilities::bound );
+            if (Utilities::periodic)
+            {
+                particle.position.setX( next_x - Utilities::sign<double>(next_x) * 2 * Utilities::bound );
+            }
+            else
+            {
+                particle.position.setX( Utilities::sign<double>(next_x) * Utilities::bound );
+            }
         }
         else
         {
@@ -107,7 +114,14 @@ void DynamicPhysics::evolve(std::vector<ChargedParticle2D>& particles)
 
         if (abs(next_y) >= Utilities::bound)
         {
-            particle.position.setY( Utilities::sign<double>(next_y) * Utilities::bound );
+            if (Utilities::periodic)
+            {
+                particle.position.setY( next_y - Utilities::sign<double>(next_y) * 2 * Utilities::bound );
+            }
+            else
+            {
+                particle.position.setY( Utilities::sign<double>(next_y) * Utilities::bound );
+            }
         }
         else
         {
@@ -129,7 +143,7 @@ void DynamicPhysics::evolve(std::vector<ChargedParticle2D>& particles)
         /*
         From the position-setting loop, now any particles
         that were headed out of bounds will have their
-        appropriate position component equal to the domain bound.
+        appropriate position component equal to the domain bound (if boundaries non-periodic)
         */
 
         // update the velocity according to Verlet velocity integration

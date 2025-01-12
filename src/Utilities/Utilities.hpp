@@ -16,6 +16,7 @@ namespace Utilities
     inline std::string outputFilename;
     inline std::size_t dim;
     inline double bound;
+    inline bool periodic;
     inline std::size_t numPoints;
     inline std::size_t numSteps;
     inline double dt;
@@ -27,6 +28,8 @@ namespace Utilities
     template <typename FileStream>
     void checkFileOpen(const FileStream& file);
     
+    Point2D r_prime (const Point2D& p1, const Point2D& p2);
+
     template <typename T>
     int sign(T val)
     {
@@ -36,8 +39,6 @@ namespace Utilities
     void appendToEndOfLine(const std::string& filename, const std::string& ext, const std::string& delimiter, const std::vector<Field2D>& data);
 
     void readJsonFile(const std::string& filename);
-
-    Point3D crossProduct(const Point3D& a, const Point3D& b);
 
     bool checkPointWithinBounds(const double& x, const double& y);
 

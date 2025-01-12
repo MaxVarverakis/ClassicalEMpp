@@ -32,6 +32,11 @@ public:
     {
         return Point2D(m_x - other.x(), m_y - other.y());
     }
+    
+    Point2D operator-(const double& value) const
+    {
+        return Point2D(m_x - value, m_y - value);
+    }
 
     Point2D operator+(const Point2D& other) const
     {
@@ -110,9 +115,23 @@ public:
         );
     }
 
+    Point3D cross(const Point3D& other) const
+    {
+        return {
+            m_y * other.z() - m_z * other.y(),
+            m_z * other.x() - m_x * other.z(),
+            m_x * other.y() - m_y * other.x()
+        };
+    };
+
     Point3D operator-(const Point3D& other) const
     {
         return Point3D(m_x - other.x(), m_y - other.y(), m_z - other.z());
+    }
+
+    Point3D operator-(const double& value) const
+    {
+        return Point3D(m_x - value, m_y - value, m_z - value);
     }
 
     Point3D operator+(const Point3D& other) const

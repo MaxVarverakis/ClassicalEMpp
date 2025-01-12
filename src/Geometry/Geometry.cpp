@@ -26,12 +26,12 @@ void Geometry::constructWorld()
         std::cout << "Constructing 2D world..." << std::endl;
         std::vector<Point2D>& grid {std::get<std::vector<Point2D>>(m_grid)};
         grid.reserve(m_numPoints * m_numPoints);
-        double dx = 2*m_bound / m_numPoints;
+        double dx = 2*m_bound / static_cast<double>(m_numPoints);
         for (std::size_t i = 0; i < m_numPoints+1; ++i)
         {
             for (std::size_t j = 0; j < m_numPoints+1; ++j)
             {
-                grid.emplace_back(Point2D(-m_bound + i*dx, -m_bound + j*dx));
+                grid.emplace_back(Point2D(-m_bound + static_cast<double>(i)*dx, -m_bound + static_cast<double>(j)*dx));
             }
         }
     }
@@ -40,14 +40,14 @@ void Geometry::constructWorld()
         std::cout << "Constructing 3D world..." << std::endl;
         std::vector<Point3D>& grid {std::get<std::vector<Point3D>>(m_grid)};
         grid.reserve(m_numPoints * m_numPoints * m_numPoints);
-        double dx = 2*m_bound / m_numPoints;
+        double dx = 2*m_bound / static_cast<double>(m_numPoints);
         for (std::size_t i = 0; i < m_numPoints+1; ++i)
         {
             for (std::size_t j = 0; j < m_numPoints+1; ++j)
             {
                 for (std::size_t k = 0; k < m_numPoints+1; ++k)
                 {
-                    grid.emplace_back(Point3D(-m_bound + i*dx, -m_bound + j*dx, -m_bound + k*dx));
+                    grid.emplace_back(Point3D(-m_bound + static_cast<double>(i)*dx, -m_bound + static_cast<double>(j)*dx, -m_bound + static_cast<double>(k)*dx));
                 }
             }
         }
